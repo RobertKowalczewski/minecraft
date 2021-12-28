@@ -1,0 +1,2 @@
+C:/Users/naruc/source/repos/opengl2/LearnOpenGL/Dependencies/include/glm/out/build/x64-Debug (default)/CMakeFiles/edit_cache.dir
+C:/Users/naruc/source/repos/opengl2/LearnOpenGL/Dependencies/include/glm/out/build/x64-Debug (default)/CMakeFiles/rebuild_cache.dir

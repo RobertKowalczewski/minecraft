@@ -107,8 +107,4 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="FastNoise.dll" />
-    <CopyFileToFolders Include="FastNoiseD.dll" />
-  </ItemGroup>
 </Project>
