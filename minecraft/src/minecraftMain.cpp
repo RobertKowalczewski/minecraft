@@ -97,8 +97,8 @@ int main() {
 
     glEnable(GL_MULTISAMPLE);
 
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(MessageCallback, 0);
+    //glEnable(GL_DEBUG_OUTPUT);
+    //glDebugMessageCallback(MessageCallback, 0);
 
     //Chunk chunk = Chunk(data, glm::vec3(0.0f, 0.0f, 0.0f));
 

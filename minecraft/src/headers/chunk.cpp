@@ -377,7 +377,6 @@ Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ive
 	*/
 
 	//vertices.reserve(36 * Constants::BLOCK_COUNT / 2);
-	vertices.resize(36 * Constants::BLOCK_COUNT / 2);
 
 	this->seed = seed;
 	this->indexPos = indexPos;
@@ -395,15 +394,12 @@ Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ive
 
 void Chunk::sendData() {
 	if (vertices.size()) {
-		auto start = high_resolution_clock::now();
-
-
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, verticesSize * sizeof(unsigned int), &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(unsigned int), &vertices[0], GL_STATIC_DRAW);
 
 		//glVertexAttribPointer converts to float
 
@@ -412,58 +408,49 @@ void Chunk::sendData() {
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		/*vertices.clear();*/
-
-		auto stop = high_resolution_clock::now();
-		auto duration = duration_cast<milliseconds>(stop - start);
-		std::cout << "sending data to gpu: " << duration.count() << std::endl;
-
 		empty = false;
 	}
-	else {
-		std::cout << "ERRROR: size " << vertices.size() << " chunk.cpp "<<std::endl;
-	}
 }
 
-void Chunk::findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT], int& index) {
-	if (z == Constants::CHUNK_SIZE_Z - 1 || !data[index + Constants::CHUNK_XY]) {
+void Chunk::findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]) {
+	if (z == Constants::CHUNK_SIZE_Z - 1 || !data[getIndex3D(x,y,z+1)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_forward) {
-			vertices[verticesSize++] = (n + posDelta);
+			vertices.push_back(n + posDelta);
 		}
 	}
-	if (!z || !data[index - Constants::CHUNK_XY]) {
+	if (!z || !data[getIndex3D(x, y, z - 1)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_behind) {
-			vertices[verticesSize++] = (n + posDelta);
+			vertices.push_back(n + posDelta);
 		}
 	}
 }
-void Chunk::findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT], int& index) {
-	if (y == Constants::CHUNK_SIZE_Y - 1 || !data[index + Constants::CHUNK_SIZE_X]) {
+void Chunk::findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]) {
+	if (y == Constants::CHUNK_SIZE_Y - 1 || !data[getIndex3D(x, y+1, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_up) {
-			vertices[verticesSize++] = (n + posDelta);
+			vertices.push_back(n + posDelta);
 		}
 	}
-	if (!y || !data[index - Constants::CHUNK_SIZE_X]) {
+	if (!y || !data[getIndex3D(x, y-1, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_down) {
-			vertices[verticesSize++] = (n + posDelta);
+			vertices.push_back(n + posDelta);
 		}
 	}
 }
-void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT], int& index) {
-	if (x == Constants::CHUNK_SIZE_X - 1 || !data[index + 1]) {
+void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]) {
+	if (x == Constants::CHUNK_SIZE_X - 1 || !data[getIndex3D(x+1, y, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_right) {
-			vertices[verticesSize++] = (n + posDelta);
+			vertices.push_back(n + posDelta);
 		}
 	}
-	if (!x || !data[index - 1]) {
+	if (!x || !data[getIndex3D(x-1, y, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_left) {
-			vertices[verticesSize++] = (n + posDelta);
+			vertices.push_back(n + posDelta);
 		}
 	}
 }
@@ -478,9 +465,9 @@ void Chunk::meshFromData(bool safeSlices[Constants::CHUNK_SIZE_Y], unsigned char
 			for (unsigned int x = 0u; x < Constants::CHUNK_SIZE_X; x++)
 			{
 				if (data[index]) {
-					findNeighboursX(x, y, z, data, index);
-					findNeighboursY(x, y, z, data, index);
-					findNeighboursZ(x, y, z, data, index);
+					findNeighboursX(x, y, z, data);
+					findNeighboursY(x, y, z, data);
+					findNeighboursZ(x, y, z, data);
 				}
 				index++;
 			}

@@ -18,9 +18,9 @@ public:
 	~Chunk();
 	void Delete();
 	void sendData();
-	void findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT], int& index);
-	void findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT], int& index);
-	void findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT], int& index);
+	void findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
+	void findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
+	void findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
 
 	void meshFromData(bool safeSlices[Constants::CHUNK_SIZE_Y], unsigned char data[Constants::BLOCK_COUNT]);
 	void meshFromData2(FastNoise::SmartNode<>& noise, unsigned char data[Constants::BLOCK_COUNT]);
