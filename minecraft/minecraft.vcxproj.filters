@@ -1439,6 +1439,12 @@
     <None Include="Dependencies\include\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\fastnoise2API\FastNoise.dll" />
+    <None Include="res\fastnoise2API\FastNoiseD.dll" />
+    <None Include="res\fastnoise2API\NoiseTool.exe" />
+    <None Include="res\fastnoise2API\NoiseTool.ini" />
+    <None Include="FastNoise.dll" />
+    <None Include="FastNoiseD.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\awesomeface.png">
@@ -1452,7 +1458,12 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="FastNoise.dll" />
-    <CopyFileToFolders Include="FastNoiseD.dll" />
+    <Library Include="Dependencies\lib\FastNoise.lib" />
+    <Library Include="Dependencies\lib\FastNoiseD.lib" />
+    <Library Include="Dependencies\lib\glew32s.lib" />
+    <Library Include="Dependencies\lib\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Dependencies\include\glm\CMakeLists.txt" />
   </ItemGroup>
 </Project>

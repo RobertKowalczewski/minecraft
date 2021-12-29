@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir\Dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FastNoiseD.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
       <HeapReserveSize>919430400</HeapReserveSize>
     </Link>
@@ -115,7 +115,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir\Dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FastNoiseD.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalDependencies>FastNoise.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -487,14 +487,6 @@
     <ClInclude Include="src\headers\vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="FastNoise.dll">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="FastNoiseD.dll">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
     <None Include="Dependencies\include\glm\detail\func_common.inl" />
     <None Include="Dependencies\include\glm\detail\func_common_simd.inl" />
     <None Include="Dependencies\include\glm\detail\func_exponential.inl" />
@@ -631,6 +623,12 @@
     <None Include="Dependencies\include\glm\gtx\vector_angle.inl" />
     <None Include="Dependencies\include\glm\gtx\vector_query.inl" />
     <None Include="Dependencies\include\glm\gtx\wrap.inl" />
+    <None Include="FastNoise.dll" />
+    <None Include="FastNoiseD.dll" />
+    <None Include="res\fastnoise2API\FastNoise.dll" />
+    <None Include="res\fastnoise2API\FastNoiseD.dll" />
+    <None Include="res\fastnoise2API\NoiseTool.exe" />
+    <None Include="res\fastnoise2API\NoiseTool.ini" />
     <None Include="res\shaders\frag3d.glsl" />
     <None Include="res\shaders\vert3d.glsl" />
     <None Include="res\test_shaders\frag3dTest.glsl" />
@@ -640,6 +638,15 @@
     <Image Include="res\textures\awesomeface.png" />
     <Image Include="res\textures\dirt.png" />
     <Image Include="res\textures\wall.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Dependencies\lib\FastNoise.lib" />
+    <Library Include="Dependencies\lib\FastNoiseD.lib" />
+    <Library Include="Dependencies\lib\glew32s.lib" />
+    <Library Include="Dependencies\lib\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Dependencies\include\glm\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
