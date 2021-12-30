@@ -21,9 +21,11 @@ using namespace std::chrono;
 struct Light: public Transform {
     float ambient;
     glm::vec3 color;
-    Light(float ambient, glm::vec3 color) {
+    glm::vec3 pos;
+    Light(float ambient, glm::vec3 color, glm::vec3 pos) {
         this->ambient = ambient;
         this->color = color;
+        this->pos = pos;
     }
 };
 
@@ -72,7 +74,7 @@ int main() {
     stbi_set_flip_vertically_on_load(true);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(800, 800, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -105,7 +107,7 @@ int main() {
     Camera camera = Camera(glm::vec3(0.0f,300.0f, 10.0f), 1, .1, 1,45.0f,1.f,0.1f,100.f);
     glfwGetCursorPos(window, &camera.mouse.x, &camera.mouse.y);
 
-    Light light = Light(.1, glm::vec3(1.0f,1.0f,1.0f));
+    Light light = Light(.1, glm::vec3(1.0f,1.0f,1.0f), glm::vec3(50, 500, 20));
 
     Shader shader = Shader("res/shaders/vert3d.glsl", "res/shaders/frag3d.glsl");
     shader.use();
@@ -135,7 +137,7 @@ int main() {
     stbi_image_free(datai);
 
     glm::mat4 projection;
-    projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 1000.0f);
+    projection = glm::perspective(glm::radians(45.0f), 16/9.0f, 0.1f, 1000.0f);
 
 
     unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
@@ -157,7 +159,8 @@ int main() {
     ChunkManager chunkManger = ChunkManager(modelLoc, shader.ID, &camera);
 
     shader.use();
-    shader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+    shader.setVec3("lightColor", light.color);
+    shader.setVec3("lightPos",light.pos);
 
     glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
     glBindTexture(GL_TEXTURE_2D, texture0);
@@ -166,11 +169,11 @@ int main() {
     {
         auto start = high_resolution_clock::now();
         
-        if(!chunkManger.chunksAwaitingGpu.empty()) {
+        while(!chunkManger.chunksAwaitingGpu.empty()) {
             chunkManger.chunksAwaitingGpu.front()->sendData();
             chunkManger.chunksAwaitingGpu.pop();
 
-            //if (duration_cast<milliseconds>(high_resolution_clock::now() - start).count() > 5) break;
+            if (duration_cast<milliseconds>(high_resolution_clock::now() - start).count() > 5) break;
         }
 
         shader.use();
@@ -182,7 +185,6 @@ int main() {
         camera.mouseInput(mx,my);
 
         shader.setVec3("viewPos", camera.pos);
-        shader.setVec3("lightPos", camera.pos);
 
 
         glm::mat4 lookAt = camera.getViewMat();

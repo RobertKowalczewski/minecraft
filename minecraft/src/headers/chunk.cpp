@@ -206,110 +206,9 @@ unsigned int getPosDelta(unsigned int dx, unsigned int dy, unsigned int dz) {
 	return (dz << 5u) + (dy << 11u) + (dx << 19u);
 }
 
-/*
-const std::vector<unsigned char> cube_behind = {
-	0 ,
-	2 ,
-	6 ,
-	0 ,
-	6 ,
-	4
-};
-const std::vector<unsigned char> cube_down = {
-	5 ,
-	1 ,
-	0 ,
-	5 ,
-	0 ,
-	4
-};
-const std::vector<unsigned char> cube_right = {
-	4 ,
-	6,
-	7 ,
-	4 ,
-	7 ,
-	5
-};
-const std::vector<unsigned char> cube_up = {
-	2 ,
-	3 ,
-	7 ,
-	2 ,
-	7 ,
-	6
-};
-const std::vector<unsigned char> cube_left = {
-	1 ,
-	3 ,
-	2 ,
-	1 ,
-	2 ,
-	0
-};
-const std::vector<unsigned char> cube_forward = {
-	5 ,
-	7 ,
-	3 ,
-	5 ,
-	3 ,
-	1
-};
-*/
-/*
-const std::vector<unsigned char> cube_behind = {
-	0, 0, 0 ,
-	0, 1, 0 ,
-	1, 1, 0 ,
-	0, 0, 0 ,
-	1, 1, 0 ,
-	1, 0, 0 
-};
-const std::vector<unsigned char> cube_down = {
-	 1, 0, 1 ,
-	 0, 0, 1 ,
-	 0, 0, 0 ,
-	 1, 0, 1 ,
-	 0, 0, 0 ,
-	 1, 0, 0 
-};
-const std::vector<unsigned char> cube_right = {
-	 1, 0, 0 ,
-	 1, 1, 0,
-	 1, 1, 1 ,
-	1, 0, 0 ,
-	 1, 1, 1 ,
-	 1, 0, 1 
-};
-const std::vector<unsigned char> cube_up = {
-	0, 1, 0 ,
-	 0, 1, 1 ,
-	1, 1, 1 ,
-	 0, 1, 0 ,
-	 1, 1, 1 ,
-	 1, 1, 0 
-};
-const std::vector<unsigned char> cube_left = {
-	 0, 0, 1 ,
-	 0, 1, 1 ,
-	 0, 1, 0 ,
-	  0, 0, 1 ,
-	  0, 1, 0 ,
-	 0, 0, 0 
-};
-const std::vector<unsigned char> cube_forward = {
-	1, 0, 1 ,
-	1, 1, 1 ,
-	0, 1, 1 ,
-	 1, 0, 1 ,
-	0, 1, 1 ,
-	 0, 0, 1 
-};
-*/
 Chunk::Chunk(){
 	vbo = 0;
 	vao = 0;
-	seed = 0;
 	indexPos = { 0,0 };
 	localMat = getLocalMat();
 }
@@ -320,65 +219,10 @@ void Chunk::Delete() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 }
-Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ivec2 indexPos, FastNoise::SmartNode<>& noise, unsigned int seed, bool safeSlices[Constants::CHUNK_SIZE_Y])
+Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ivec2 indexPos)
 	:Transform(pos)
 {
-	/*unsigned int dataBin = writeBin(10, 70, 30, 1, 1, 3);
 
-	unsigned int normalIndex = dataBin & 0x7;
-	glm::vec3 aNormal = glm::vec3(normals[normalIndex * 3], normals[normalIndex * 3+ 1], normals[normalIndex * 3 + 2]);
-
-	glm::vec2 aTexCoord = glm::vec2(float((dataBin & 0x10) >> 4), float((dataBin & 0x8) >> 3));
-
-	glm::vec4 aPos = glm::vec4(float((dataBin & 0x1F80000) >> 19),
-		float((dataBin & 0x7F800) >> 11),
-		float((dataBin & 0x7E0) >> 5),
-		1.0);
-
-	std::cout << std::bitset<32>(dataBin) << std::endl;
-	std::cout << aPos.x <<" "<<aPos.y<<" "<<aPos.z << std::endl;*/
-	/*std::cout << "cube_behind" << std::endl;
-	for (int i = 0; i < cube_behind.size();i+=8) {
-		unsigned int bin = writeBin(cube_behind[i], cube_behind[i + 1], cube_behind[i + 2], cube_behind[i + 3], cube_behind[i + 4], 1);
-		std::cout << bin << ", ";
-	}
-	std::cout<<std::endl;
-	std::cout << "cube_down" << std::endl;
-	for (int i = 0; i < cube_down.size(); i += 8) {
-		unsigned int bin = writeBin(cube_down[i], cube_down[i + 1], cube_down[i + 2], cube_down[i + 3], cube_down[i + 4], 2);
-		std::cout << bin << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "cube_right" << std::endl;
-	for (int i = 0; i < cube_right.size(); i += 8) {
-		unsigned int bin = writeBin(cube_right[i], cube_right[i + 1], cube_right[i + 2], cube_right[i + 3], cube_right[i + 4], 3);
-		std::cout << bin << ", ";
-	}
-	std::cout << std::endl;
-
-	std::cout << "cube_up" << std::endl;
-	for (int i = 0; i < cube_up.size(); i += 8) {
-		unsigned int bin = writeBin(cube_up[i], cube_up[i + 1], cube_up[i + 2], cube_up[i + 3], cube_up[i + 4], 4);
-		std::cout << bin << ", ";
-	}
-	std::cout << std::endl;
-
-	std::cout << "cube_left" << std::endl;
-	for (int i = 0; i < cube_left.size(); i += 8) {
-		unsigned int bin = writeBin(cube_left[i], cube_left[i + 1], cube_left[i + 2], cube_left[i + 3], cube_left[i + 4], 5);
-		std::cout << bin << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "cube_forward" << std::endl;
-	for (int i = 0; i < cube_forward.size(); i += 8) {
-		unsigned int bin = writeBin(cube_forward[i], cube_forward[i + 1], cube_forward[i + 2], cube_forward[i + 3], cube_forward[i + 4], 6);
-		std::cout << bin << ", ";
-	}
-	*/
-
-	//vertices.reserve(36 * Constants::BLOCK_COUNT / 2);
-
-	this->seed = seed;
 	this->indexPos = indexPos;
 	localMat = getLocalMat();
 
@@ -386,9 +230,7 @@ Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ive
 	//this->data.insert(this->data.end(), &data[0], &data[Constants::BLOCK_COUNT]);
 
 
-	meshFromData(safeSlices, data);
-	//meshFromData2(noise, data);
-
+	meshFromData(data);
 	std::cout << "mesh creation: " << duration_cast<milliseconds>(high_resolution_clock::now() - start).count() << std::endl;
 }
 
@@ -455,7 +297,7 @@ void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, u
 	}
 }
 
-void Chunk::meshFromData(bool safeSlices[Constants::CHUNK_SIZE_Y], unsigned char data[Constants::BLOCK_COUNT]) {
+void Chunk::meshFromData(unsigned char data[Constants::BLOCK_COUNT]) {
 	int index = 0;
 
 	for (unsigned int z = 0u; z < Constants::CHUNK_SIZE_Z; z++)
@@ -470,115 +312,6 @@ void Chunk::meshFromData(bool safeSlices[Constants::CHUNK_SIZE_Y], unsigned char
 					findNeighboursZ(x, y, z, data);
 				}
 				index++;
-			}
-		}
-	}
-}
-void Chunk::meshFromData2(FastNoise::SmartNode<>& noise, unsigned char data[Constants::BLOCK_COUNT]) {
-	int last = 0;
-	int val = 0;
-	unsigned int posDelta = 0;
-
-	for (unsigned int x = 0; x < Constants::CHUNK_SIZE_X; x++)
-	{
-
-		for (unsigned int y = 0; y < Constants::CHUNK_SIZE_Y; y++)
-		{
-			last = 0;
-			for (unsigned int z = 0; z < Constants::CHUNK_SIZE_Z; z++)
-			{
-				val = data[getIndex3D(x,y,z)];
-				if (val != last) {
-					posDelta = getPosDelta(x, y, z);
-					if (last) {
-						posDelta = getPosDelta(x, y, z - 1);
-						for (unsigned int v : cube_forward) {
-							vertices.push_back(v + posDelta);
-						}
-					}
-					else {
-						for (unsigned int v : cube_behind) {
-							vertices.push_back(v + posDelta);
-						}
-					}
-				}
-				last = val;
-			}
-			if (val) {
-				posDelta = getPosDelta(x, y, Constants::CHUNK_SIZE_Z-1);
-				for (unsigned int v : cube_forward) {
-					/*if (noise->GenSingle3D(x + pos.x, y + pos.y, Constants::CHUNK_SIZE_Z + pos.z,seed)) {
-						vertices.push_back(v + posDelta);
-					}*/
-					vertices.push_back(v + posDelta);
-
-				}
-			}
-		}
-	}
-
-	for (unsigned int x = 0; x < Constants::CHUNK_SIZE_X; x++)
-	{
-		for (unsigned int z = 0; z < Constants::CHUNK_SIZE_Z; z++)
-		{
-			last = 0;
-			for (unsigned int y = 0; y < Constants::CHUNK_SIZE_Y; y++)
-			{
-				val = data[getIndex3D(x, y, z)];
-				if (val != last) {
-					if (last) {
-						posDelta = getPosDelta(x, y - 1, z);
-						for (unsigned int v : cube_up) {
-							vertices.push_back(v + posDelta);
-						}
-					}
-					else {
-						posDelta = getPosDelta(x, y, z);
-						for (unsigned int v : cube_down) {
-							vertices.push_back(v + posDelta);
-						}
-					}
-				}
-				last = val;
-			}
-			if (val) {
-				posDelta = getPosDelta(x, Constants::CHUNK_SIZE_Y - 1, z);
-				for (unsigned int v : cube_up) {
-					vertices.push_back(v + posDelta);
-				}
-			}
-		}
-	}
-
-	for (unsigned int y = 0; y < Constants::CHUNK_SIZE_Y; y++)
-	{
-		for (unsigned int z = 0; z < Constants::CHUNK_SIZE_Z; z++)
-		{
-			last = 0;
-			for (unsigned int x = 0; x < Constants::CHUNK_SIZE_X; x++)
-			{
-				val = data[getIndex3D(x, y, z)];
-				if (val != last) {
-					if (last) {
-						posDelta = getPosDelta(x - 1, y, z);
-						for (unsigned int v : cube_right) {
-							vertices.push_back(v + posDelta);
-						}
-					}
-					else {
-						posDelta = getPosDelta(x, y, z);
-						for (unsigned int v : cube_left) {
-							vertices.push_back(v + posDelta);
-						}
-					}
-				}
-				last = val;
-			}
-			if (val) {
-				posDelta = getPosDelta(Constants::CHUNK_SIZE_X - 1, y, z);
-				for (unsigned int v : cube_right) {
-					vertices.push_back(v + posDelta);
-				}
 			}
 		}
 	}

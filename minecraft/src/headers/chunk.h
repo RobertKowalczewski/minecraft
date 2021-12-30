@@ -3,8 +3,6 @@
 
 
 class Chunk: public Transform {
-	unsigned int verticesSize = 0;
-	unsigned int seed;
 public:
 	glm::uvec2 indexPos;
 	glm::mat4 localMat;
@@ -13,7 +11,7 @@ public:
 	bool empty=true;
 	std::vector<unsigned char> data;
 	std::vector<unsigned int> vertices;
-	Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ivec2 indexPos, FastNoise::SmartNode<>& noise, unsigned int seed, bool safeSlices[Constants::CHUNK_SIZE_Y]);
+	Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ivec2 indexPos);
 	Chunk();
 	~Chunk();
 	void Delete();
@@ -22,7 +20,6 @@ public:
 	void findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
 	void findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
 
-	void meshFromData(bool safeSlices[Constants::CHUNK_SIZE_Y], unsigned char data[Constants::BLOCK_COUNT]);
-	void meshFromData2(FastNoise::SmartNode<>& noise, unsigned char data[Constants::BLOCK_COUNT]);
+	void meshFromData(unsigned char data[Constants::BLOCK_COUNT]);
 
 };

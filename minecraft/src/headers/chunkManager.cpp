@@ -213,9 +213,6 @@ void ChunkManager::noiseSettings()
 
 void ChunkManager::createChunk(glm::ivec4 pos)
 {
-
-	bool safeSlices[Constants::CHUNK_SIZE_Y];
-	std::fill_n(safeSlices, Constants::CHUNK_SIZE_Y, 1);
 	auto start = high_resolution_clock::now();
 
 	unsigned char data[Constants::BLOCK_COUNT];
@@ -240,7 +237,7 @@ void ChunkManager::createChunk(glm::ivec4 pos)
 	std::cout << "noise: " << duration_cast<milliseconds>(high_resolution_clock::now() - start).count() << std::endl;
 
 
-	threadedChunks.push(Chunk(data, glm::vec3(pos.z, 0, pos.w), glm::vec2(pos.x, pos.y), noise, seed, safeSlices));
+	threadedChunks.push(Chunk(data, glm::vec3(pos.z, 0, pos.w), glm::vec2(pos.x, pos.y)));
 
 
 }
@@ -249,9 +246,6 @@ void ChunkManager::createChunkHeightMap(glm::ivec4 pos) {
 	float noiseOutput[(Constants::CHUNK_SIZE_X+2) * (Constants::CHUNK_SIZE_Z+2)];
 	noise->GenUniformGrid2D(noiseOutput, pos.z-1, pos.w-1, Constants::CHUNK_SIZE_X+2, Constants::CHUNK_SIZE_Z+2, 0.01f, 10);
 
-	bool safeSlices[Constants::CHUNK_SIZE_Y];
-	std::fill_n(safeSlices, Constants::CHUNK_SIZE_Y, 1);
-	
 	unsigned char data[Constants::BLOCK_COUNT];
 	int borderY;
 	for (int z = 0; z < Constants::CHUNK_SIZE_Z; z++)
@@ -265,14 +259,13 @@ void ChunkManager::createChunkHeightMap(glm::ivec4 pos) {
 				}
 				else {
 					data[getIndex3D(x, y, z)] = 0;
-					safeSlices[y] = 0;
 				}
 			}
 		}
 	}
 
 
-	threadedChunks.push(Chunk(data, glm::vec3(pos.z, 0, pos.w), glm::vec2(pos.x,pos.y), noise, seed, safeSlices));
+	threadedChunks.push(Chunk(data, glm::vec3(pos.z, 0, pos.w), glm::vec2(pos.x,pos.y)));
 }
 
 void ChunkManager::renderChunks(Shader& shader)
@@ -286,12 +279,3 @@ void ChunkManager::renderChunks(Shader& shader)
 	}
 
 }
-//TODO
-/*void ChunkManager::generateMesh()
-{
-	//TODO one big mesh
-	mesh.clear();
-	for (Chunk& chunk : chunks) {
-		mesh.insert(mesh.end(), chunk.vertices.begin(), chunk.vertices.end());
-	}
-}*/
