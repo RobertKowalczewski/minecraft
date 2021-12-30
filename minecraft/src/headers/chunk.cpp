@@ -219,7 +219,7 @@ void Chunk::Delete() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 }
-Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ivec2 indexPos)
+Chunk::Chunk(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y], glm::vec3 pos, glm::ivec2 indexPos)
 	:Transform(pos)
 {
 
@@ -253,42 +253,42 @@ void Chunk::sendData() {
 	}
 }
 
-void Chunk::findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]) {
-	if (z == Constants::CHUNK_SIZE_Z - 1 || !data[getIndex3D(x,y,z+1)]) {
+void Chunk::findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+	if (!data[getIndex3DNoise(x,y,z+1)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_forward) {
 			vertices.push_back(n + posDelta);
 		}
 	}
-	if (!z || !data[getIndex3D(x, y, z - 1)]) {
+	if (!data[getIndex3DNoise(x, y, z - 1)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_behind) {
 			vertices.push_back(n + posDelta);
 		}
 	}
 }
-void Chunk::findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]) {
-	if (y == Constants::CHUNK_SIZE_Y - 1 || !data[getIndex3D(x, y+1, z)]) {
+void Chunk::findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+	if (!data[getIndex3DNoise(x, y+1, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_up) {
 			vertices.push_back(n + posDelta);
 		}
 	}
-	if (!y || !data[getIndex3D(x, y-1, z)]) {
+	if (!data[getIndex3DNoise(x, y-1, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_down) {
 			vertices.push_back(n + posDelta);
 		}
 	}
 }
-void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]) {
-	if (x == Constants::CHUNK_SIZE_X - 1 || !data[getIndex3D(x+1, y, z)]) {
+void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+	if (!data[getIndex3DNoise(x+1, y, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_right) {
 			vertices.push_back(n + posDelta);
 		}
 	}
-	if (!x || !data[getIndex3D(x-1, y, z)]) {
+	if (!data[getIndex3DNoise(x-1, y, z)]) {
 		unsigned int posDelta = getPosDelta(x, y, z);
 		for (unsigned int n : cube_left) {
 			vertices.push_back(n + posDelta);
@@ -296,21 +296,18 @@ void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, u
 	}
 }
 
-void Chunk::meshFromData(unsigned char data[Constants::BLOCK_COUNT]) {
-	int index = 0;
-
-	for (unsigned int z = 0u; z < Constants::CHUNK_SIZE_Z; z++)
+void Chunk::meshFromData(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+	for (unsigned int z = 1u; z < Constants::CHUNK_SIZE_Z + 1u; z++)
 	{
 		for (unsigned int y = 0u; y < Constants::CHUNK_SIZE_Y; y++)
 		{
-			for (unsigned int x = 0u; x < Constants::CHUNK_SIZE_X; x++)
+			for (unsigned int x = 1u; x < Constants::CHUNK_SIZE_X + 1u; x++)
 			{
-				if (data[index]) {
+				if (data[getIndex3DNoise(x,y,z)]) {
 					findNeighboursX(x, y, z, data);
 					findNeighboursY(x, y, z, data);
 					findNeighboursZ(x, y, z, data);
 				}
-				index++;
 			}
 		}
 	}

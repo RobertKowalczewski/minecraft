@@ -15,6 +15,7 @@
 #include<algorithm>
 #include <simplexnoise.h>
 
+#include"block.h"
 #include"stack.h"
 #include"constants.h"
 #include"functions.h"
@@ -243,22 +244,22 @@ void ChunkManager::createChunk(glm::ivec4 pos)
 }
 
 void ChunkManager::createChunkHeightMap(glm::ivec4 pos) {
-	float noiseOutput[(Constants::CHUNK_SIZE_X+2) * (Constants::CHUNK_SIZE_Z+2)];
+	float noiseOutput[Constants::NOISE_ARRAY_SIZE];
 	noise->GenUniformGrid2D(noiseOutput, pos.z-1, pos.w-1, Constants::CHUNK_SIZE_X+2, Constants::CHUNK_SIZE_Z+2, 0.01f, 10);
 
-	unsigned char data[Constants::BLOCK_COUNT];
+	uint8_t data[Constants::CHUNK_SIZE_Y * Constants::NOISE_ARRAY_SIZE];
 	int borderY;
-	for (int z = 0; z < Constants::CHUNK_SIZE_Z; z++)
+	for (int z = 0; z < Constants::CHUNK_SIZE_Z+2; z++)
 	{
-		for (int x = 0; x < Constants::CHUNK_SIZE_X; x++)
+		for (int x = 0; x < Constants::CHUNK_SIZE_X+2; x++)
 		{
 			borderY = noiseOutput[x + ((Constants::CHUNK_SIZE_Z + 1) - z) * (Constants::CHUNK_SIZE_X+2)] * Constants::CHUNK_SIZE_Y;
 			for (int y = 0; y < Constants::CHUNK_SIZE_Y; y++) {
 				if (y < borderY) {
-					data[getIndex3D(x,y,z)] = 1;
+					data[getIndex3DNoise(x, y, z)] = 1;
 				}
 				else {
-					data[getIndex3D(x, y, z)] = 0;
+					data[getIndex3DNoise(x, y, z)] = 0;
 				}
 			}
 		}

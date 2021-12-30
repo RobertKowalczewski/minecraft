@@ -103,8 +103,6 @@ int main() {
     //glEnable(GL_DEBUG_OUTPUT);
     //glDebugMessageCallback(MessageCallback, 0);
 
-    //Chunk chunk = Chunk(data, glm::vec3(0.0f, 0.0f, 0.0f));
-
     Camera camera = Camera(glm::vec3(0.0f,300.0f, 10.0f), 1, .1, 1,45.0f,1.f,0.1f,100.f);
     glfwGetCursorPos(window, &camera.mouse.x, &camera.mouse.y);
 
@@ -112,7 +110,6 @@ int main() {
 
     Shader shader = Shader("res/shaders/vert3d.glsl", "res/shaders/frag3d.glsl");
     shader.use();
-
 
     unsigned int texture0;
     glGenTextures(1, &texture0);
