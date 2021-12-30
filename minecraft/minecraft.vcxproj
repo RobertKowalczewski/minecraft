@@ -157,6 +157,7 @@
     <ClCompile Include="src\headers\functions.cpp" />
     <ClCompile Include="src\headers\stack.cpp" />
     <ClCompile Include="src\headers\shader.cpp" />
+    <ClCompile Include="src\headers\water.cpp" />
     <ClCompile Include="src\test.cpp" />
     <ClCompile Include="src\headers\transform.cpp" />
     <ClCompile Include="src\minecraftMain.cpp" />
@@ -486,6 +487,7 @@
     <ClInclude Include="src\headers\shader.h" />
     <ClInclude Include="src\headers\transform.h" />
     <ClInclude Include="src\headers\vertex.h" />
+    <ClInclude Include="src\headers\water.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\include\glm\detail\func_common.inl" />
