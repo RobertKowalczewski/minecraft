@@ -1,5 +1,4 @@
 #pragma once
-
 namespace Constants {
 	const unsigned int CHUNK_SIZE_X = 32u;
 	const unsigned int CHUNK_SIZE_Y = 128u;
@@ -17,5 +16,5 @@ enum class BlockType : unsigned char{
 	AIR,
 	DIRT,
 	WATER,
-	STONE
+	SAND
 };

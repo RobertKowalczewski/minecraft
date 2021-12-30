@@ -1,15 +1,16 @@
-#version 330 core
+#version 440 core
 
 out vec4 FragColor;
 
-in vec2 texCoord;
+in vec3 texCoord;
 in vec3 normal;
 in vec3 fragPos;
 
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 viewPos;
-uniform sampler2D texture1;
+
+uniform sampler2DArray texture1;
 
 void main()
 {
@@ -18,7 +19,7 @@ void main()
     vec3 ambient = ambientStrength * lightColor;
 
     //diffuse
-    vec3 pixelColor = vec3(texture(texture1, texCoord));
+    vec4 pixelColor = texture(texture1, vec3(texCoord.xy, texCoord.z-1));
     vec3 lightDir = normalize(lightPos - fragPos);
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
@@ -32,6 +33,6 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shineness);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = (ambient + diffuse + specular) * pixelColor;
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4((ambient + diffuse + specular) * pixelColor.rgb, pixelColor.a);
+    //FragColor = texture(texture1, vec3(texCoord.x, texCoord.y, 0));
 }

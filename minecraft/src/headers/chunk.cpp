@@ -9,10 +9,10 @@
 #include<queue>
 #include <FastNoise/FastNoise.h>
 
-
 #include"constants.h"
 #include"functions.h"
 #include "transform.h"
+#include"vertex.h"
 #include "chunk.h"
 
 using namespace std::chrono;
@@ -117,55 +117,6 @@ const std::vector<int> cube_forward = {
 };
 */
 /*
-const std::vector<unsigned int> cube_behind = {
-	5,
-	262157,
-	17039389,
-	5,
-	17039389,
-	16777237,
-};
-const std::vector<unsigned int> cube_down = {
-	16778244,
-	1036,
-	28,
-	16778244,
-	28,
-	16777236,
-};
-const std::vector<unsigned int> cube_right = {
-	16777216,
-	17039368,
-	17040408,
-	16777216,
-	17040408,
-	16778256,
-};
-const std::vector<unsigned int> cube_up = {
-	262145,
-	263177,
-	17040409,
-	262145,
-	17040409,
-	17039377,
-};
-const std::vector<unsigned int> cube_left = {
-	1027,
-	263179,
-	262171,
-	1027,
-	262171,
-	19,
-};
-const std::vector<unsigned int> cube_forward = {
-	16778242,
-	17040394,
-	263194,
-	16778242,
-	263194,
-	1042,
-};
-*/
 const unsigned int cube_behind[] = {
 	1u, 2057u, 526361u, 1u, 526361u, 524305u
 };
@@ -184,6 +135,7 @@ const unsigned int cube_left[] = {
 const unsigned int cube_forward[] = {
 	524326u, 526382u, 2110u, 524326u, 2110u, 54u
 };
+*/
 
 unsigned int writeBin(unsigned int& x, unsigned int& y, unsigned int& z, bool& tx,bool& ty, unsigned int& n) {
 	/*
@@ -219,18 +171,18 @@ void Chunk::Delete() {
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 }
-Chunk::Chunk(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y], glm::vec3 pos, glm::ivec2 indexPos)
+Chunk::Chunk(uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y], glm::vec3 pos, glm::ivec2 indexPos)
 	:Transform(pos)
 {
 
 	this->indexPos = indexPos;
 	localMat = getLocalMat();
-	auto start = high_resolution_clock::now();
+	//auto start = high_resolution_clock::now();
 	//this->data.insert(this->data.end(), &data[0], &data[Constants::BLOCK_COUNT]);
 
 
 	meshFromData(data);
-	std::cout << "mesh creation: " << duration_cast<milliseconds>(high_resolution_clock::now() - start).count() << std::endl;
+	//std::cout << "mesh creation: " << duration_cast<milliseconds>(high_resolution_clock::now() - start).count() << std::endl;
 }
 
 void Chunk::sendData() {
@@ -242,6 +194,8 @@ void Chunk::sendData() {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(unsigned int), &vertices[0], GL_STATIC_DRAW);
 
+		
+
 		//glVertexAttribPointer converts to float
 
 		glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(unsigned int), (void*)0);
@@ -252,61 +206,80 @@ void Chunk::sendData() {
 		empty = false;
 	}
 }
-
-void Chunk::findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+void Chunk::findNeighboursZ(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
 	if (!data[getIndex3DNoise(x,y,z+1)]) {
-		unsigned int posDelta = getPosDelta(x, y, z);
-		for (unsigned int n : cube_forward) {
-			vertices.push_back(n + posDelta);
-		}
+		vertices.push_back(Vertex{  1 + x, y, 1 + z, 0, 0, 0, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, 1 + z, 0, 1, 0, textureID});
+		vertices.push_back(Vertex{	x, 1 + y, 1 + z, 1, 1, 0, textureID});
+
+		vertices.push_back(Vertex{	1 + x, y, 1 + z, 0, 0, 0, textureID});
+		vertices.push_back(Vertex{	x, 1 + y, 1 + z, 1, 1, 0, textureID});
+		vertices.push_back(Vertex{	x, y, 1 + z, 1, 0, 0, textureID});
 	}
 	if (!data[getIndex3DNoise(x, y, z - 1)]) {
-		unsigned int posDelta = getPosDelta(x, y, z);
-		for (unsigned int n : cube_behind) {
-			vertices.push_back(n + posDelta);
-		}
+		vertices.push_back(Vertex{ x,y, z, 0, 0, 5, textureID });
+		vertices.push_back(Vertex{ x, 1 + y,z, 0, 1, 5, textureID });
+		vertices.push_back(Vertex{ 1 + x, 1 + y, z, 1, 1, 5, textureID });
+
+		vertices.push_back(Vertex{ x, y, z, 0, 0, 5, textureID });
+		vertices.push_back(Vertex{ 1 + x, 1 + y, z, 1, 1, 5, textureID });
+		vertices.push_back(Vertex{ 1 + x, y, z, 1, 0, 5, textureID });
 	}
 }
-void Chunk::findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+void Chunk::findNeighboursY(unsigned int& textureID, unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
 	if (!data[getIndex3DNoise(x, y+1, z)]) {
-		unsigned int posDelta = getPosDelta(x, y, z);
-		for (unsigned int n : cube_up) {
-			vertices.push_back(n + posDelta);
-		}
+		vertices.push_back(Vertex{  x, 1 + y, z, 0, 0, 3, textureID});
+		vertices.push_back(Vertex{	x, 1 + y, 1 + z, 0, 1, 3, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, 1 + z, 1, 1, 3, textureID});
+
+		vertices.push_back(Vertex{	x, 1 + y, z, 0, 0, 3, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, 1 + z, 1, 1, 3, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, z, 1, 0, 3, textureID});
 	}
 	if (!data[getIndex3DNoise(x, y-1, z)]) {
-		unsigned int posDelta = getPosDelta(x, y, z);
-		for (unsigned int n : cube_down) {
-			vertices.push_back(n + posDelta);
-		}
+		vertices.push_back(Vertex{  1 + x, y, 1 + z, 0, 0, 1, textureID});
+		vertices.push_back(Vertex{	x, y, 1 + z, 0, 1, 1, textureID});
+		vertices.push_back(Vertex{	x, y, z, 1, 1, 1, textureID});
+
+		vertices.push_back(Vertex{	1 + x, y, 1 + z, 0, 0, 1, textureID});
+		vertices.push_back(Vertex{	x, y, z, 1, 1, 1, textureID});
+		vertices.push_back(Vertex{	1 + x, y, z, 1, 0, 1, textureID});
 	}
 }
-void Chunk::findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+void Chunk::findNeighboursX(unsigned int& textureID, unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
 	if (!data[getIndex3DNoise(x+1, y, z)]) {
-		unsigned int posDelta = getPosDelta(x, y, z);
-		for (unsigned int n : cube_right) {
-			vertices.push_back(n + posDelta);
-		}
+		vertices.push_back(Vertex{  1 + x, y, z, 0, 0,2, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, z, 0, 1,2, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, 1 + z, 1, 1,2, textureID});
+
+		vertices.push_back(Vertex{	1 + x, y, z, 0, 0,2, textureID});
+		vertices.push_back(Vertex{	1 + x, 1 + y, 1 + z, 1, 1,2, textureID});
+		vertices.push_back(Vertex{	1 + x, y, 1 + z, 1, 0,2, textureID});
 	}
 	if (!data[getIndex3DNoise(x-1, y, z)]) {
-		unsigned int posDelta = getPosDelta(x, y, z);
-		for (unsigned int n : cube_left) {
-			vertices.push_back(n + posDelta);
-		}
+		vertices.push_back(Vertex{  x, y, 1 + z, 0, 0, 4, textureID});
+		vertices.push_back(Vertex{	x, 1 + y, 1 + z, 0, 1, 4, textureID});
+		vertices.push_back(Vertex{	x, 1 + y, z, 1, 1, 4, textureID});
+
+		vertices.push_back(Vertex{	x, y, 1 + z, 0, 0, 4, textureID});
+		vertices.push_back(Vertex{	x, 1 + y, z, 1, 1, 4, textureID});
+		vertices.push_back(Vertex{	x, y, z, 1, 0, 4, textureID});
 	}
 }
 
-void Chunk::meshFromData(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+void Chunk::meshFromData(uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]) {
+	unsigned int blockType;
 	for (unsigned int z = 1u; z < Constants::CHUNK_SIZE_Z + 1u; z++)
 	{
 		for (unsigned int y = 0u; y < Constants::CHUNK_SIZE_Y; y++)
 		{
 			for (unsigned int x = 1u; x < Constants::CHUNK_SIZE_X + 1u; x++)
 			{
-				if (data[getIndex3DNoise(x,y,z)]) {
-					findNeighboursX(x, y, z, data);
-					findNeighboursY(x, y, z, data);
-					findNeighboursZ(x, y, z, data);
+				if (blockType = data[getIndex3DNoise(x,y,z)]) {
+					blockType = static_cast<unsigned int>(BlockType::WATER);
+					findNeighboursX(blockType,x, y, z, data);
+					findNeighboursY(blockType,x, y, z, data);
+					findNeighboursZ(blockType,x, y, z, data);
 				}
 			}
 		}
