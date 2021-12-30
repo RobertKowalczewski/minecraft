@@ -151,13 +151,13 @@
     <ClCompile Include="Dependencies\include\glm\detail\glm.cpp" />
     <ClCompile Include="Dependencies\include\simplexnoise.cpp" />
     <ClCompile Include="Dependencies\include\stb\stb_image.cpp" />
+    <ClCompile Include="src\headers\block.cpp" />
     <ClCompile Include="src\headers\camera.cpp" />
     <ClCompile Include="src\headers\chunk.cpp" />
     <ClCompile Include="src\headers\chunkManager.cpp" />
     <ClCompile Include="src\headers\functions.cpp" />
     <ClCompile Include="src\headers\stack.cpp" />
     <ClCompile Include="src\headers\shader.cpp" />
-    <ClCompile Include="src\headers\water.cpp" />
     <ClCompile Include="src\test.cpp" />
     <ClCompile Include="src\headers\transform.cpp" />
     <ClCompile Include="src\minecraftMain.cpp" />
@@ -478,6 +478,7 @@
     <ClInclude Include="Dependencies\include\perlinNoise.h" />
     <ClInclude Include="Dependencies\include\simplexnoise.h" />
     <ClInclude Include="Dependencies\include\stb\stb_image.h" />
+    <ClInclude Include="src\headers\block.h" />
     <ClInclude Include="src\headers\camera.h" />
     <ClInclude Include="src\headers\chunk.h" />
     <ClInclude Include="src\headers\chunkManager.h" />
@@ -487,7 +488,6 @@
     <ClInclude Include="src\headers\shader.h" />
     <ClInclude Include="src\headers\transform.h" />
     <ClInclude Include="src\headers\vertex.h" />
-    <ClInclude Include="src\headers\water.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\include\glm\detail\func_common.inl" />

@@ -15,6 +15,7 @@
 #include "headers/camera.h"
 #include "headers/chunk.h"
 #include "headers/chunkManager.h"
+#include"headers/block.h"
 
 using namespace std::chrono;
 
@@ -111,7 +112,6 @@ int main() {
 
     Shader shader = Shader("res/shaders/vert3d.glsl", "res/shaders/frag3d.glsl");
     shader.use();
-
 
 
     unsigned int texture0;

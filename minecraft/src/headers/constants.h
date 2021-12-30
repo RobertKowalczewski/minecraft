@@ -11,3 +11,9 @@ namespace Constants {
 namespace Debug {
 	const bool DEBUG = false;
 }
+enum class BlockType {
+	AIR,
+	DIRT,
+	WATER,
+	STONE
+};

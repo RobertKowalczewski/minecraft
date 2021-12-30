@@ -225,7 +225,6 @@ Chunk::Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ive
 
 	this->indexPos = indexPos;
 	localMat = getLocalMat();
-
 	auto start = high_resolution_clock::now();
 	//this->data.insert(this->data.end(), &data[0], &data[Constants::BLOCK_COUNT]);
 
