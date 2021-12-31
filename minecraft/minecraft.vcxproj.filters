@@ -57,6 +57,9 @@
     <ClCompile Include="src\headers\vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\headers\noise_.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\shader.h">
@@ -147,24 +150,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\include\FastNoise\SmartNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\include\FastSIMD\FastSIMD.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\include\FastSIMD\FastSIMD_Config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\include\FastSIMD\FastSIMD_Export.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\include\FastSIMD\FunctionList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\include\FastSIMD\InlInclude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\include\FastSIMD\SIMDTypeList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\include\GL\eglew.h">
@@ -1034,6 +1019,9 @@
     <ClInclude Include="src\headers\block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\headers\noise_.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\frag3d.glsl" />
@@ -1454,6 +1442,7 @@
     <None Include="res\fastnoise2API\NoiseTool.ini" />
     <None Include="FastNoise.dll" />
     <None Include="FastNoiseD.dll" />
+    <None Include="libnoise.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\awesomeface.png">
@@ -1471,6 +1460,7 @@
     <Library Include="Dependencies\lib\FastNoiseD.lib" />
     <Library Include="Dependencies\lib\glew32s.lib" />
     <Library Include="Dependencies\lib\glfw3.lib" />
+    <Library Include="Dependencies\lib\libnoise.lib" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\include\glm\CMakeLists.txt" />

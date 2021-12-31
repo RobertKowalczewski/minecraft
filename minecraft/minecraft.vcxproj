@@ -97,6 +97,7 @@
       <AdditionalLibraryDirectories>$(ProjectDir)\Dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libnoise.lib;FastNoiseD.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
       <HeapReserveSize>919430400</HeapReserveSize>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,6 +118,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)\Dependencies\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libnoise.lib;FastNoise.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,6 +158,7 @@
     <ClCompile Include="src\headers\chunk.cpp" />
     <ClCompile Include="src\headers\chunkManager.cpp" />
     <ClCompile Include="src\headers\functions.cpp" />
+    <ClCompile Include="src\headers\noise_.cpp" />
     <ClCompile Include="src\headers\stack.cpp" />
     <ClCompile Include="src\headers\shader.cpp" />
     <ClCompile Include="src\headers\vertex.cpp" />
@@ -181,12 +184,6 @@
     <ClInclude Include="Dependencies\include\FastNoise\Generators\Value.h" />
     <ClInclude Include="Dependencies\include\FastNoise\Metadata.h" />
     <ClInclude Include="Dependencies\include\FastNoise\SmartNode.h" />
-    <ClInclude Include="Dependencies\include\FastSIMD\FastSIMD.h" />
-    <ClInclude Include="Dependencies\include\FastSIMD\FastSIMD_Config.h" />
-    <ClInclude Include="Dependencies\include\FastSIMD\FastSIMD_Export.h" />
-    <ClInclude Include="Dependencies\include\FastSIMD\FunctionList.h" />
-    <ClInclude Include="Dependencies\include\FastSIMD\InlInclude.h" />
-    <ClInclude Include="Dependencies\include\FastSIMD\SIMDTypeList.h" />
     <ClInclude Include="Dependencies\include\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\include\GLFW\glfw3native.h" />
     <ClInclude Include="Dependencies\include\glm\common.hpp" />
@@ -485,6 +482,7 @@
     <ClInclude Include="src\headers\chunkManager.h" />
     <ClInclude Include="src\headers\constants.h" />
     <ClInclude Include="src\headers\functions.h" />
+    <ClInclude Include="src\headers\noise_.h" />
     <ClInclude Include="src\headers\stack.h" />
     <ClInclude Include="src\headers\shader.h" />
     <ClInclude Include="src\headers\transform.h" />
@@ -629,6 +627,7 @@
     <None Include="Dependencies\include\glm\gtx\wrap.inl" />
     <None Include="FastNoise.dll" />
     <None Include="FastNoiseD.dll" />
+    <None Include="libnoise.dll" />
     <None Include="res\fastnoise2API\FastNoise.dll" />
     <None Include="res\fastnoise2API\FastNoiseD.dll" />
     <None Include="res\fastnoise2API\NoiseTool.exe" />
@@ -648,6 +647,7 @@
     <Library Include="Dependencies\lib\FastNoiseD.lib" />
     <Library Include="Dependencies\lib\glew32s.lib" />
     <Library Include="Dependencies\lib\glfw3.lib" />
+    <Library Include="Dependencies\lib\libnoise.lib" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\include\glm\CMakeLists.txt" />
