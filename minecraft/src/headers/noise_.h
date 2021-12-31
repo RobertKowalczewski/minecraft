@@ -2,6 +2,8 @@
 #include <FastNoise/FastNoise.h>
 #include <perlinNoise.h>
 #include<libnoise/noise.h>
+#include<accidentalNoise/anl.h>
+
 
 class Noise {
 public:
@@ -14,4 +16,5 @@ public:
 	//anl
 
 	Noise();
+	float GetNoiseAnl(int x, int y, int z);
 };
