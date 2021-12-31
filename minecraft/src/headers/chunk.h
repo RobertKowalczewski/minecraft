@@ -1,10 +1,9 @@
 #pragma once
 #include <FastNoise/FastNoise.h>
+#include"vertex.h"
 
 
 class Chunk: public Transform {
-	unsigned int verticesSize = 0;
-	unsigned int seed;
 public:
 	glm::uvec2 indexPos;
 	glm::mat4 localMat;
@@ -12,17 +11,16 @@ public:
 	unsigned int vbo;
 	bool empty=true;
 	std::vector<unsigned char> data;
-	std::vector<unsigned int> vertices;
-	Chunk(unsigned char data[Constants::BLOCK_COUNT], glm::vec3 pos, glm::ivec2 indexPos, FastNoise::SmartNode<>& noise, unsigned int seed, bool safeSlices[Constants::CHUNK_SIZE_Y]);
+	std::vector<Vertex> vertices;
+	Chunk(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y], glm::vec3 pos, glm::ivec2 indexPos);
 	Chunk();
 	~Chunk();
 	void Delete();
 	void sendData();
-	void findNeighboursZ(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
-	void findNeighboursX(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
-	void findNeighboursY(unsigned int& x, unsigned int& y, unsigned int& z, unsigned char data[Constants::BLOCK_COUNT]);
+	void findNeighboursZ(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
+	void findNeighboursX(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
+	void findNeighboursY(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
 
-	void meshFromData(bool safeSlices[Constants::CHUNK_SIZE_Y], unsigned char data[Constants::BLOCK_COUNT]);
-	void meshFromData2(FastNoise::SmartNode<>& noise, unsigned char data[Constants::BLOCK_COUNT]);
+	void meshFromData(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
 
 };

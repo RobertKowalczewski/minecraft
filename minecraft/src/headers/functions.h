@@ -2,6 +2,8 @@
 
 int getIndex3D(int x, int y, int z);
 int getIndex3D(unsigned int x, unsigned int y, unsigned int z);
+int getIndex3DNoise(unsigned int x, unsigned int y, unsigned int z);
+
 //unsigned int vectorHash(glm::ivec2 const& v);
 
 struct pair_hash {
