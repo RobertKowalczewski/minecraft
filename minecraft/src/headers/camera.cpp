@@ -7,7 +7,7 @@
 
 
 Camera::Camera(glm::vec3 pos, float speed, float sensitivity, float zoom, float fovy, float aspect, float near, float far)
-	:Transform(pos)
+	:Transform(pos, { 0,0,-1 }, { 0,1,0 }, { 1,0,0 }, 0.0f, -90.0f)
 {
 	this->speed = speed;
 	this->zoom = zoom;

@@ -6,7 +6,14 @@
 
 
 class Noise {
+	anl::CImplicitGradient groundGradient;
+	anl::CImplicitFractal lowlandShapeFractal = { anl::BILLOW, anl::GRADIENT, anl::QUINTIC };
+	anl::CImplicitAutoCorrect lowlandAutocorrect = { 0.0, 1.0 };
+	anl::CImplicitScaleOffset lowlandScale = { 0.125, -0.45 };
+	anl::CImplicitScaleDomain lowlandYScale = { 1.0, 0.0 };
+	anl::CImplicitTranslateDomain lowlandTerrain;
 public:
+
 	//perlinNoise.h
 	const siv::BasicPerlinNoise<float> perlinNoise{ 0 };
 	//FastNoise/FastNoise.h
@@ -16,5 +23,6 @@ public:
 	//anl
 
 	Noise();
+	void setupNoiseAnl();
 	float GetNoiseAnl(int x, int y, int z);
 };

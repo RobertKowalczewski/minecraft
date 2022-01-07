@@ -7,13 +7,15 @@
 
 Transform::Transform(glm::vec3 pos, glm::vec3 forward,
 	glm::vec3 up, glm::vec3 right, float pitch, float yaw) {
+	this->up = up;
 	this->pos = pos;
 	this->forward = forward;
 	this->right = right;
 	this->pitch = pitch;
 	this->yaw = yaw;
-
-	updateDirections();
+	if (pitch!=0.0f || yaw!=0.0f) {
+		updateDirections();
+	}
 }
 
 //check

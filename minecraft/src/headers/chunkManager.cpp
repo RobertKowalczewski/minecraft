@@ -50,11 +50,11 @@ ChunkManager::ChunkManager(unsigned int modelLoc, unsigned int shaderID, Camera*
 	}
 
 	threads.push_back(std::thread(&ChunkManager::createChunksAsync, this));
+
 	//threads.push_back(std::thread(&ChunkManager::requestNewChunks, this));
 }
 
 void ChunkManager::createChunksAsync() {
-	std::chrono::milliseconds time(20);
 	while (true) {
 		if (!chunksPos.empty()) {
 			std::vector<glm::ivec4> temp;
@@ -67,8 +67,8 @@ void ChunkManager::createChunksAsync() {
 						temp.begin(),
 						temp.end(),
 						[this](auto&& pos) {
-							createChunkHeightMap(pos);
-							//createChunk(pos);
+							//createChunkHeightMap(pos);
+							createChunk(pos);
 						}
 					);
 			while (!threadedChunks.empty()) {
@@ -100,7 +100,6 @@ void ChunkManager::requestNewChunks()
 			lastCamPos = camPos;
 		}
 	}
-
 }
 
 void ChunkManager::updateVisibleChunks(glm::ivec2 dPos, glm::ivec2 camPos) {
@@ -209,45 +208,30 @@ void ChunkManager::updateVisibleChunks(glm::ivec2 dPos, glm::ivec2 camPos) {
 
 void ChunkManager::noiseSettings()
 {
-	noise = FastNoise::NewFromEncodedNodeTree("EwAAAIA/EwCPwnU+HAABGwAhACEAGwAWAB0BAAATAK5H4T4HAACPwvU9FgBc////EwAfhes/BwAAcT0KPxsAIQAWAKf///8TAD0KV0AIABYAhQAAABMA7FFIQQcAAAAAAD8APQrXPgAfhes+ARMACtcjPRYAGAEAAAcAAI/CdT0=");
+	//noise = FastNoise::NewFromEncodedNodeTree("EACamZk/HgAZAB0ABAAAAAAAKVyPPgAAAAAAAAAAAAAAAEjhqkAAAAAAAAAAAAEEAAAAAACPwnW+exSuPgAAAAAAAAAAhetxQAAAAAAAAAAAAR0AGABSuB6/AACAPxYAAgAAABMApHA9Pw0AAwAAAAAAIEAIAACamRk/AAAAgD8BEwAzMzM///8EAAEZAAQAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//8IAADNzEw+");
+	noise = FastNoise::NewFromEncodedNodeTree("HQAeAB4AGQAdAAQAAAAAAClcjz4AAAAAAAAAAAAAAAAzM9NAAAAAAAAAAAABBAAAAAAAj8J1vnsUrj4AAAAAAAAAAOF6DEEAAAAAAAAAAAEdABgAFK5HvwAAgD8WAAIAAAATAKRwPT8NAAMAAAAAACBACAAAZmamPwAAAIA/AAAAgD8BEAAUrkc/GQAEAAAAAAB7FC4/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMA7FE4Pv//BAAApHA9PwAAAIC/AAAAgD8=");
 }
 
 void ChunkManager::createChunk(glm::ivec4 pos)
 {
-	auto start = high_resolution_clock::now();
+	std::vector<float> noiseOutput(Constants::CHUNK_SIZE_Y * Constants::NOISE_ARRAY_SIZE);
+	noise->GenUniformGrid3D(noiseOutput.data(), pos.z - 1,-(int)Constants::CHUNK_SIZE_Y/2, pos.w - 1, Constants::CHUNK_SIZE_X + 2, Constants::CHUNK_SIZE_Y, Constants::CHUNK_SIZE_Z + 2, 0.01f, 10);
 
-	unsigned char data[Constants::BLOCK_COUNT];
+	//float avg = (minMax.min + minMax.max) / 2;
 
-	float frequency = 0.01;
-
-	for (int x = 0; x < Constants::CHUNK_SIZE_X; x++)
-	{
-		for (int y = 0; y < Constants::CHUNK_SIZE_Y; y++)
-		{
-			for (int z = 0; z < Constants::CHUNK_SIZE_Z; z++)
-			{
-				if (octave_noise_3d(4,.2, 1,(x + pos.z + 999999) * frequency, y * frequency, (Constants::CHUNK_SIZE_Z - 1 - z + pos.w + 999999) * frequency) > 0) {
-					data[getIndex3D(x,y,z)] = 1;
-				}
-				else {
-					data[getIndex3D(x, y, z)] = 0;
-				}
-			}
-		}
+	std::vector<uint8_t> data(Constants::CHUNK_SIZE_Y * Constants::NOISE_ARRAY_SIZE);
+	for (int i = 0; i < Constants::CHUNK_SIZE_Y * Constants::NOISE_ARRAY_SIZE; i++){
+		data[i] = noiseOutput[i] < 0 ? 1 : 0;
 	}
-	std::cout << "noise: " << duration_cast<milliseconds>(high_resolution_clock::now() - start).count() << std::endl;
-
 
 	threadedChunks.push(Chunk(data, glm::vec3(pos.z, 0, pos.w), glm::vec2(pos.x, pos.y)));
-
-
 }
 
 void ChunkManager::createChunkHeightMap(glm::ivec4 pos) {
 	float noiseOutput[Constants::NOISE_ARRAY_SIZE];
 	noise->GenUniformGrid2D(noiseOutput, pos.z-1, pos.w-1, Constants::CHUNK_SIZE_X+2, Constants::CHUNK_SIZE_Z+2, 0.01f, 10);
 
-	uint8_t data[Constants::CHUNK_SIZE_Y * Constants::NOISE_ARRAY_SIZE];
+	std::vector<uint8_t> data(Constants::CHUNK_SIZE_Y * Constants::NOISE_ARRAY_SIZE);
 	int borderY;
 	for (int z = 0; z < Constants::CHUNK_SIZE_Z+2; z++)
 	{

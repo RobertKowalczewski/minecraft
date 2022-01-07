@@ -5,6 +5,7 @@
 #include"stack.h"
 #include"camera.h"
 #include"functions.h"
+#include"noise_.h"
 
 
 class ChunkManager {
@@ -13,6 +14,7 @@ class ChunkManager {
 	glm::ivec2 lastCamPos;
 	//FastNoise::SmartNode<FastNoise::Perlin> noise = FastNoise::New<FastNoise::Perlin>();
 	Stack<Chunk> threadedChunks;
+	Noise noise_;
 public:
 	FastNoise::SmartNode<> noise;
 	Camera* camera;

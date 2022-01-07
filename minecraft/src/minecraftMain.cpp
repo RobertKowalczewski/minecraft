@@ -17,6 +17,7 @@
 #include "headers/chunk.h"
 #include "headers/chunkManager.h"
 #include"headers/block.h"
+#include"headers/debug.h"
 
 using namespace std::chrono;
 
@@ -104,7 +105,7 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+    glCullFace(GL_BACK);
 
     glEnable(GL_MULTISAMPLE);
 
@@ -114,7 +115,7 @@ int main() {
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(MessageCallback, 0);
 
-    Camera camera = Camera(glm::vec3(0.0f,300.0f, 10.0f), 1, .1, 1,45.0f,1.f,0.1f,100.f);
+    Camera camera = Camera(glm::vec3(-48.9459, 80, 15.0318), 1, .1, 1,45.0f,1.f,0.1f,100.f);
     glfwGetCursorPos(window, &camera.mouse.x, &camera.mouse.y);
 
     Light light = Light(.1, glm::vec3(1.0f,1.0f,1.0f), glm::vec3(50, 500, 20));
@@ -144,19 +145,21 @@ int main() {
 
     //glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, textureW, textureH, layerCount, GL_RGBA8, GL_UNSIGNED_BYTE, &textures[0]);
 	//glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, textureW, textureH, layerCount, 0, GL_RGBA8, GL_UNSIGNED_BYTE, NULL);
-    glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, textureW, textureH, layerCount);
+    glTexStorage3D(GL_TEXTURE_2D_ARRAY, 3, GL_RGBA8, textureW, textureH, layerCount);
 	for (int i = 0; i < layerCount; i++)
 	{
         glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, textureW, textureH, 1, GL_RGBA, GL_UNSIGNED_BYTE, textures2[i].data());
 	}
-
-    glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+    
+    //TODO mipmaps blures the image
 
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f);
 
+    glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
 
 
@@ -171,6 +174,8 @@ int main() {
 
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+    //Debugger debugger(true, true, projection, shader.ID, &camera);
+
     float normals[] = {
         0.0f,0.0f,1.0f,
         0.0f,-1.0f,0.0f,
@@ -181,30 +186,29 @@ int main() {
     };
     glUniform1fv(glGetUniformLocation(shader.ID, "normals"), 18, normals);
 
-    ChunkManager chunkManger = ChunkManager(modelLoc, shader.ID, &camera);
+    ChunkManager chunkManager = ChunkManager(modelLoc, shader.ID, &camera);
 
-    shader.use();
     shader.setVec3("lightColor", light.color);
     shader.setVec3("lightPos",light.pos);
-    //glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0); //Sampler refers to texture unit 0
+    glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0); //Sampler refers to texture unit 0
 
     glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
     glBindTexture(GL_TEXTURE_2D_ARRAY, texture0);
    
     while (!glfwWindowShouldClose(window))
     {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         auto start = high_resolution_clock::now();
-        
-        while(!chunkManger.chunksAwaitingGpu.empty()) {
-            chunkManger.chunksAwaitingGpu.front()->sendData();
-            chunkManger.chunksAwaitingGpu.pop();
+        while(!chunkManager.chunksAwaitingGpu.empty()) {
+            chunkManager.chunksAwaitingGpu.front()->sendData();
+            chunkManager.chunksAwaitingGpu.pop();
 
             if (duration_cast<milliseconds>(high_resolution_clock::now() - start).count() > 5) break;
         }
 
-        shader.use();
+        //debugger.doStuff(chunkManager.visibleChunks);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         double mx, my;
         glfwGetCursorPos(window, &mx, &my);
@@ -215,7 +219,7 @@ int main() {
 
         glm::mat4 lookAt = camera.getViewMat();
         glUniformMatrix4fv(viewLoc,1,GL_FALSE,glm::value_ptr(lookAt));
-        chunkManger.renderChunks(shader);
+        chunkManager.renderChunks(shader);
 
         processInput(window, &camera);
 

@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\Dependencies\include;$(ProjectDir)\src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +111,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\Dependencies\include;$(ProjectDir)\src\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -209,6 +211,7 @@
     <ClCompile Include="src\headers\camera.cpp" />
     <ClCompile Include="src\headers\chunk.cpp" />
     <ClCompile Include="src\headers\chunkManager.cpp" />
+    <ClCompile Include="src\headers\debug.cpp" />
     <ClCompile Include="src\headers\functions.cpp" />
     <ClCompile Include="src\headers\noise_.cpp" />
     <ClCompile Include="src\headers\stack.cpp" />
@@ -666,6 +669,7 @@
     <ClInclude Include="src\headers\chunkManager.h" />
     <ClInclude Include="src\headers\constants.h" />
     <ClInclude Include="src\headers\functions.h" />
+    <ClInclude Include="src\headers\debug.h" />
     <ClInclude Include="src\headers\noise_.h" />
     <ClInclude Include="src\headers\stack.h" />
     <ClInclude Include="src\headers\shader.h" />
@@ -812,14 +816,14 @@
     <None Include="FastNoise.dll" />
     <None Include="FastNoiseD.dll" />
     <None Include="libnoise.dll" />
+    <None Include="res\debugShader\fragmentD.glsl" />
+    <None Include="res\debugShader\vertexD.glsl" />
     <None Include="res\fastnoise2API\FastNoise.dll" />
     <None Include="res\fastnoise2API\FastNoiseD.dll" />
     <None Include="res\fastnoise2API\NoiseTool.exe" />
     <None Include="res\fastnoise2API\NoiseTool.ini" />
     <None Include="res\shaders\frag3d.glsl" />
     <None Include="res\shaders\vert3d.glsl" />
-    <None Include="res\test_shaders\frag3dTest.glsl" />
-    <None Include="res\test_shaders\vert3dTest.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\awesomeface.png" />

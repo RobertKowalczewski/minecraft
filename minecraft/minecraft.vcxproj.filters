@@ -216,6 +216,9 @@
     <ClCompile Include="Dependencies\include\accidentalNoise\rgbaselect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\headers\debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\shader.h">
@@ -1574,12 +1577,13 @@
     <ClInclude Include="Dependencies\include\accidentalNoise\include\vectortypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\headers\debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\frag3d.glsl" />
     <None Include="res\shaders\vert3d.glsl" />
-    <None Include="res\test_shaders\frag3dTest.glsl" />
-    <None Include="res\test_shaders\vert3dTest.glsl" />
     <None Include="Dependencies\include\glm\detail\func_common.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -1995,6 +1999,8 @@
     <None Include="FastNoise.dll" />
     <None Include="FastNoiseD.dll" />
     <None Include="libnoise.dll" />
+    <None Include="res\debugShader\fragmentD.glsl" />
+    <None Include="res\debugShader\vertexD.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\awesomeface.png">

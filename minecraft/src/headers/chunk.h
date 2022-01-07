@@ -1,5 +1,18 @@
 #pragma once
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include<iostream>
+#include<vector>
+#include <GL/glew.h>
+#include <bitset>
+#include <chrono>
+#include<queue>
 #include <FastNoise/FastNoise.h>
+
+#include"constants.h"
+#include"functions.h"
+#include "transform.h"
 #include"vertex.h"
 
 
@@ -12,15 +25,15 @@ public:
 	bool empty=true;
 	std::vector<unsigned char> data;
 	std::vector<Vertex> vertices;
-	Chunk(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y], glm::vec3 pos, glm::ivec2 indexPos);
+	Chunk(std::vector<uint8_t>& data, glm::vec3 pos, glm::ivec2 indexPos);
+
 	Chunk();
 	~Chunk();
 	void Delete();
 	void sendData();
-	void findNeighboursZ(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
-	void findNeighboursX(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
-	void findNeighboursY(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, uint8_t data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
-
-	void meshFromData(unsigned char data[Constants::NOISE_ARRAY_SIZE * Constants::CHUNK_SIZE_Y]);
+	void findNeighboursZ(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, std::vector<uint8_t>& data);
+	void findNeighboursX(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, std::vector<uint8_t>& data);
+	void findNeighboursY(unsigned int& textureID,unsigned int& x, unsigned int& y, unsigned int& z, std::vector<uint8_t>& data);
+	void meshFromData(std::vector<uint8_t>& data);
 
 };

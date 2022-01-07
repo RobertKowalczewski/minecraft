@@ -12,25 +12,15 @@ uniform float normals[18];
 
 void main()
 {
-   /* int normalIndex = int(data & 0x7u);
-    vec3 aNormal = vec3(normals[normalIndex * 3], normals[normalIndex * 3 + 1], normals[normalIndex * 3 + 2]);
-
-    texCoord = vec2(float((data & 0x10u) >> 4u), float((data & 0x8u) >> 3u));
-
-    vec4 aPos = vec4(float((data & 0x1F80000u) >> 19u),
-                     float((data & 0x7F800u) >> 11u),
-                     float((data & 0x7E0u) >> 5u),
-                     1.0);*/
-
     texCoord = vec3(
         float(data & 0x1u),
         float((data & 0x2u) >> 1u),
-        float((data & 0x1FCu) >> 2u)
+        float((data & 0xFCu) >> 2u)
     );
 
     vec4 aPos = vec4(
-        float((data & 0x7E00u) >> 9u),
-        float((data & 0x7F8000u) >> 15u),
+        float((data & 0x3F00u) >> 8u),
+        float((data & 0x7FC000u) >> 14u),
         float((data & 0x1F800000u) >> 23u),
         1.0
     );
